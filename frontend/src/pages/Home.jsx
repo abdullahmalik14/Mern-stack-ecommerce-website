@@ -8,7 +8,9 @@ const Home = () => {
     <div>
       <Hero />
       <FeaturedCollection />
+      
       <WhyChooseUs />
+
       <Newsletter />
     </div>
   );
