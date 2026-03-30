@@ -37,10 +37,13 @@ const registerUser = async (req, res) => {
     return;
   }
 
+  const isFirstAccount = (await User.countDocuments({})) === 0;
+
   const user = await User.create({
     name,
     email,
     password,
+    isAdmin: isFirstAccount,
   });
 
   if (user) {
@@ -74,9 +77,8 @@ const forgotPassword = async (req, res) => {
   await user.save({ validateBeforeSave: false });
 
   // Create reset url
-  const resetUrl = `${req.protocol}://${req.get(
-    "host",
-  )}/api/auth/resetpassword/${resetToken}`;
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+  const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
   const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
 

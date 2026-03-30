@@ -11,6 +11,9 @@ const ShopContextProvider = (props) => {
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(
+    JSON.parse(localStorage.getItem("userInfo")) || null
+  );
 
   // Fetch Products from Backend
   const getProductsData = async () => {
@@ -118,7 +121,9 @@ const ShopContextProvider = (props) => {
     getCartAmount,
     token,
     setToken,
-    setCartItems
+    setCartItems,
+    userInfo,
+    setUserInfo
   };
 
   return (

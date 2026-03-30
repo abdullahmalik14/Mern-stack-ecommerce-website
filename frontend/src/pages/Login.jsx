@@ -7,7 +7,7 @@ import { ShopContext } from "../context/ShopContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setToken } = useContext(ShopContext);
+  const { setToken, setUserInfo } = useContext(ShopContext);
 
   const navigate = useNavigate();
 
@@ -17,6 +17,7 @@ const Login = () => {
       const { data } = await api.post("/auth/login", { email, password });
       console.log("Login success:", data);
       setToken(data.token);
+      setUserInfo(data);
       localStorage.setItem("token", data.token);
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/");
@@ -105,7 +106,7 @@ const Login = () => {
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-black hover:underline">Forgot your password?</a>
+                <Link to="/forgot-password" className="font-medium text-black hover:underline">Forgot your password?</Link>
               </div>
             </div>
 

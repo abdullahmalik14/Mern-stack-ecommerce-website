@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../utils/api";
+import { ShopContext } from "../context/ShopContext";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setToken, setUserInfo } = useContext(ShopContext);
 
   const navigate = useNavigate();
 
@@ -15,6 +17,9 @@ const Register = () => {
     try {
       const { data } = await api.post("/auth/register", { name, email, password });
       console.log("Register success:", data);
+      setToken(data.token);
+      setUserInfo(data);
+      localStorage.setItem("token", data.token);
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/");
     } catch (error) {

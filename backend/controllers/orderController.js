@@ -51,11 +51,24 @@ const addOrderItems = async (req, res) => {
         text: `Thank you for your order! Your Order ID is: ${createdOrder._id}. Total Amount: $${totalPrice}`,
       };
 
+      const adminMailOptions = {
+        from: process.env.EMAIL_USER,
+        to: "malikabdullahmalik14@gmail.com",
+        subject: "New Order Received",
+        text: `A new order has been placed!\nOrder ID: ${createdOrder._id}\nTotal Amount: $${totalPrice}\nCustomer Email: ${customerEmail}`,
+      };
+
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.log("Email error:", error.message);
+          console.log("Customer email error:", error.message);
         } else {
-          console.log("Email sent: " + info.response);
+          console.log("Customer email sent");
+        }
+      });
+
+      transporter.sendMail(adminMailOptions, (error, info) => {
+        if (error) {
+          console.log("Admin email error:", error.message);
         }
       });
     } catch (emailErr) {
@@ -74,4 +87,30 @@ const getUserOrders = async (req, res) => {
   res.json(orders);
 };
 
-module.exports = { addOrderItems, getUserOrders };
+// @desc    Get all orders
+// @route   GET /api/orders
+// @access  Private/Admin
+const getOrders = async (req, res) => {
+  const orders = await Order.find({}).populate("user", "id name");
+  res.json(orders);
+};
+
+// @desc    Update order status
+// @route   PUT /api/orders/:id/status
+// @access  Private/Admin
+const updateOrderStatus = async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.status = req.body.status || order.status;
+    if (req.body.status === "Delivered") {
+        order.isDelivered = true;
+    }
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } else {
+    res.status(404).json({ message: "Order not found" });
+  }
+};
+
+module.exports = { addOrderItems, getUserOrders, getOrders, updateOrderStatus };

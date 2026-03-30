@@ -3,13 +3,20 @@ import { ShopContext } from "../context/ShopContext";
 import { Filter, X } from "lucide-react";
 import ProductItem from "../components/ProductItem";
 
-const Collection = () => {
+const Collection = ({ category: propCategory }) => {
   const { products, search, showSearch } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
-  const [category, setCategory] = useState([]);
-  const [subCategory, setSubCategory] = useState([]);
+  const [category, setCategory] = useState(propCategory ? [propCategory] : []);
   const [sortType, setSortType] = useState("relevant");
+
+  useEffect(() => {
+    if (propCategory) {
+       setCategory([propCategory]);
+    } else {
+       setCategory([]);
+    }
+  }, [propCategory]);
 
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
@@ -42,12 +49,6 @@ const Collection = () => {
       );
     }
 
-    if (subCategory.length > 0) {
-      productsCopy = productsCopy.filter((item) =>
-        subCategory.includes(item.subCategory)
-      );
-    }
-
     // Sort logic
     switch (sortType) {
       case "low-high":
@@ -64,7 +65,7 @@ const Collection = () => {
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch, products, sortType]);
+  }, [category, search, showSearch, products, sortType]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t container mx-auto px-4">
@@ -89,71 +90,36 @@ const Collection = () => {
         >
           <p className="mb-3 text-sm font-medium uppercase">categories</p>
           <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
-            <p className="flex gap-2">
-              <input
-                className="w-3"
-                type="checkbox"
-                value={"Men"}
-                onChange={toggleCategory}
-              />{" "}
-              Men
-            </p>
-            <p className="flex gap-2">
-              <input
-                className="w-3"
-                type="checkbox"
-                value={"Women"}
-                onChange={toggleCategory}
-              />{" "}
-              Women
-            </p>
-            <p className="flex gap-2">
-              <input
-                className="w-3"
-                type="checkbox"
-                value={"Other"}
-                onChange={toggleCategory}
-              />{" "}
-              Accessories
-            </p>
-          </div>
-        </div>
-
-        {/* SubCategory Filter */}
-        <div
-          className={`border border-gray-300 pl-5 py-3 my-5 ${
-            showFilter ? "" : "hidden"
-          } sm:block`}
-        >
-          <p className="mb-3 text-sm font-medium uppercase">Type</p>
-          <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
-            <p className="flex gap-2">
+            <label className="flex gap-2 cursor-pointer">
               <input
                 className="w-3"
                 type="checkbox"
                 value={"Topwear"}
-                onChange={toggleSubCategory}
+                checked={category.includes("Topwear")}
+                onChange={toggleCategory}
               />{" "}
               Topwear
-            </p>
-            <p className="flex gap-2">
+            </label>
+            <label className="flex gap-2 cursor-pointer">
               <input
                 className="w-3"
                 type="checkbox"
                 value={"Bottomwear"}
-                onChange={toggleSubCategory}
+                checked={category.includes("Bottomwear")}
+                onChange={toggleCategory}
               />{" "}
               Bottomwear
-            </p>
-            <p className="flex gap-2">
+            </label>
+            <label className="flex gap-2 cursor-pointer">
               <input
                 className="w-3"
                 type="checkbox"
-                value={"Winterwear"}
-                onChange={toggleSubCategory}
+                value={"Footwears"}
+                checked={category.includes("Footwears")}
+                onChange={toggleCategory}
               />{" "}
-              Winterwear
-            </p>
+              Footwears
+            </label>
           </div>
         </div>
       </div>

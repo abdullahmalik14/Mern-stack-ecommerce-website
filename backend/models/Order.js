@@ -48,6 +48,10 @@ const orderSchema = new mongoose.Schema(
       required: true,
       default: false,
     },
+    status: {
+      type: String,
+      default: "Processing",
+    },
     customerEmail: {
       type: String,
       required: true,

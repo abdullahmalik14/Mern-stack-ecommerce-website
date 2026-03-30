@@ -1,16 +1,19 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { ShoppingBag, User, Search, Menu, X } from "lucide-react";
 import { useContext, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const { getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
+  const { getCartCount, token, setToken, setCartItems, userInfo, setUserInfo } = useContext(ShopContext);
 
   const logout = () => {
     navigate('/login')
     localStorage.removeItem('userInfo')
+    localStorage.removeItem('token')
     setToken('')
+    setUserInfo(null)
     setCartItems({})
   }
 
@@ -27,7 +30,9 @@ const Navbar = () => {
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-600 hover:text-black transition-colors text-sm font-medium uppercase tracking-wide">Home</Link>
             <Link to="/collection" className="text-gray-600 hover:text-black transition-colors text-sm font-medium uppercase tracking-wide">Collection</Link>
-            <Link to="/men" className="text-gray-600 hover:text-black transition-colors text-sm font-medium uppercase tracking-wide">Men</Link>
+            <Link to="/topwear" className="text-gray-600 hover:text-black transition-colors text-sm font-medium uppercase tracking-wide">Topwear</Link>
+            <Link to="/bottomwear" className="text-gray-600 hover:text-black transition-colors text-sm font-medium uppercase tracking-wide">Bottomwear</Link>
+            <Link to="/footwears" className="text-gray-600 hover:text-black transition-colors text-sm font-medium uppercase tracking-wide">Footwears</Link>
             <Link to="/about" className="text-gray-600 hover:text-black transition-colors text-sm font-medium uppercase tracking-wide">About</Link>
           </div>
 
@@ -40,6 +45,9 @@ const Navbar = () => {
                   <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded">
                       <p className="cursor-pointer hover:text-black">My Profile</p>
                       <p onClick={() => navigate('/orders')} className="cursor-pointer hover:text-black">Orders</p>
+                      {userInfo && userInfo.isAdmin && (
+                        <p onClick={() => navigate('/admin/dashboard')} className="cursor-pointer hover:text-black text-blue-600 font-semibold">Admin Panel</p>
+                      )}
                       <p onClick={logout} className="cursor-pointer hover:text-black">Logout</p>
                   </div>
                </div>
@@ -65,7 +73,9 @@ const Navbar = () => {
           <div className="px-4 pt-2 pb-6 space-y-1">
             <Link to="/" className="block py-3 text-base font-medium text-gray-900 border-b border-gray-50" onClick={() => setIsOpen(false)}>Home</Link>
             <Link to="/collection" className="block py-3 text-base font-medium text-gray-600 border-b border-gray-50" onClick={() => setIsOpen(false)}>Collection</Link>
-            <Link to="/men" className="block py-3 text-base font-medium text-gray-600 border-b border-gray-50" onClick={() => setIsOpen(false)}>Men</Link>
+            <Link to="/topwear" className="block py-3 text-base font-medium text-gray-600 border-b border-gray-50" onClick={() => setIsOpen(false)}>Topwear</Link>
+            <Link to="/bottomwear" className="block py-3 text-base font-medium text-gray-600 border-b border-gray-50" onClick={() => setIsOpen(false)}>Bottomwear</Link>
+            <Link to="/footwears" className="block py-3 text-base font-medium text-gray-600 border-b border-gray-50" onClick={() => setIsOpen(false)}>Footwears</Link>
             <Link to="/about" className="block py-3 text-base font-medium text-gray-600 border-b border-gray-50" onClick={() => setIsOpen(false)}>About</Link>
             <div className="pt-4 flex space-x-6">
               <Link to="/login" className="text-gray-600" onClick={() => setIsOpen(false)}><User size={20} /></Link>
